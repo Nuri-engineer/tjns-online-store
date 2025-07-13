@@ -1,46 +1,89 @@
-# Getting Started with Create React App
+# Elbrus Bootcamp Vite bundle
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## React + Typescript + ESLint + Prettier
 
-## Available Scripts
+Современный быстрый сборщик React проекта на Typescript с предустановленными настройками ESLint и Prettier от Elbrus Bootcamp.
 
-In the project directory, you can run:
+## Использование
 
-### `npm start`
+```
+npx degit Elbrus-Bootcamp/vite-react-ts my-app
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+cd my-app
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+npm i
+```
 
-### `npm test`
+## Скрипты
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Запустить в режиме разработки
 
-### `npm run build`
+```
+npm run dev
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Собрать проект
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+npm run build
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Превью
 
-### `npm run eject`
+```
+npm run preview
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## `ENV`
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Для подключения переменных окружения нужно описать их в файле `.env` в корне. Переменные окружения можно получить из объекта `import.meta.env`. Чтобы Typescript подсказывал, какими переменными окружения можно пользоваться, их нужно прописать в файле `src/env.d.ts`. Только переменные с префиксом `VITE_` передаются на клиент.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## `settings.json`
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Чтобы настроить форматирование и линтование по сохранению, необходимо прописать в `settings.json` (ctrl + shift + P) следующие настройки:
 
-## Learn More
+```json
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Можно добавить форматирование Prettier для JS и React:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```json
+{
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
+```
+
+При работе не из корневой директории необходимо настроить CWD для ESLint:
+
+```json
+{
+  "eslint.workingDirectories": [
+    { "directory": "./client", "changeProcessCWD": true },
+    { "directory": "./server", "changeProcessCWD": true }
+  ]
+}
+```
+
+Если директория не `client` или `server`, то можно добавить соответствующую строчку в данный массив.
+
+## FAQ 
+
+1. На windows из-под wsl Vite не следит за изменениями файлов
+Добавить в `vite.config`
+
+```js
+server: { watch: { usePolling: true } }
+```
+Подробнее:  https://vitejs.dev/config/server-options.html#server-watch. 

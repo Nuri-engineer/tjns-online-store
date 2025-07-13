@@ -2,19 +2,14 @@ const { User } = require('../../db/models');
 const bcrypt = require('bcrypt');
 
 class AuthService {
-  static async signupAdmin({ name, email, password, number }) {
+  static async signupAdmin({ name, email, password }) {
     if (!name || !email || !password) {
       throw new Error('Не достаточно данных для регистрации администратора');
     }
 
     const [user, created] = await User.findOrCreate({
       where: { email },
-      defaults: {
-        name,
-        number,
-        password: await bcrypt.hash(password, 10),
-        status: 'admin',
-      },
+      defaults: { name, password: await bcrypt.hash(password, 10), status: 'admin' },
     });
 
     if (!created) {
@@ -26,10 +21,13 @@ class AuthService {
     return resultUser;
   }
 
-  static async getUser() {
+  static async getUsers(){
     const users = await User.findAll({
-      where: { status: 'user' },
+      where: {
+        status: 'user',
+      },
     });
+
     return users;
   }
 
@@ -39,17 +37,18 @@ class AuthService {
         status: 'admin',
       },
     });
+
     return admins;
   }
 
-  static async signupUser({ number, email, password, name }) {
-    if (!number || !email || !password) {
+  static async signup({ name, email, password }) {
+    if (!name || !email || !password) {
       throw new Error('Не достаточно данных для регистрации пользователя');
     }
 
     const [user, created] = await User.findOrCreate({
       where: { email },
-      defaults: { name, number, password: await bcrypt.hash(password, 10) },
+      defaults: { name, password: await bcrypt.hash(password, 10) },
     });
 
     if (!created) {
@@ -69,13 +68,13 @@ class AuthService {
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
-      throw new Error('User not found');
+      throw new Error('Пользователь не найден');
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
 
     if (!isValidPassword) {
-      throw new Error('Пользователь не найден');
+      throw new Error('Неверный пароль');
     }
 
     const resultUser = user.get();

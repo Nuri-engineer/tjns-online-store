@@ -1,4 +1,4 @@
-const authRouter = require('express').Router();
+const authRouter = require('express').Router()
 const AuthController = require('../controllers/AuthController');
 
 authRouter.post('/signup', AuthController.signup);
@@ -8,4 +8,5 @@ authRouter.post('/signupAdmin', AuthController.signupAdmin);
 authRouter.get('/getAdmin', AuthController.getAdmin);
 authRouter.get('/getUsers', AuthController.getUsers);
 
-module.exports = authRouter;
+
+module.exports = authRouter

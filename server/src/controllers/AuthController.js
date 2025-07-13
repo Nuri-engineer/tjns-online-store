@@ -1,6 +1,6 @@
-const cookieConfig = require('../configs/cookieConfig');
 const AuthService = require('../services/AuthService');
 const generateTokens = require('../utils/generateTokens');
+const cookieConfig = require('../configs/cookieConfig');
 
 class AuthController {
   static async signupAdmin(req, res) {
@@ -15,7 +15,7 @@ class AuthController {
 
   static async getUsers(req, res) {
     try {
-      const users = await AuthService.getUser();
+      const users = await AuthService.getUsers();
       return res.status(200).json(users);
     } catch (error) {
       console.error('Ошибка при получении пользователей', error);
@@ -26,6 +26,7 @@ class AuthController {
   static async getAdmin(req, res) {
     try {
       const user = await AuthService.getAdmins();
+      // должен отправляться массив администраторов
       return res.status(200).json(user);
     } catch (error) {
       console.error('Ошибка при получении администратора', error);
@@ -35,12 +36,12 @@ class AuthController {
 
   static async signup(req, res) {
     try {
-      const user = await AuthService.signupUser(req.body);
+      const user = await AuthService.signup(req.body);
       const { accessToken, refreshToken } = generateTokens({ user });
       return res
         .cookie('refreshToken', refreshToken, cookieConfig)
         .status(200)
-        .json({ user, accessToken });
+        .json({ accessToken, user });
     } catch (error) {
       console.error('Ошибка при регистрации пользователя', error);
       res.status(500).send('Ошибка сервера при регистрации пользователя');
